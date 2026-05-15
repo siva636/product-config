@@ -1,0 +1,1 @@
+/Users/siva/ShopifyProjects/shopify-product-config/AGENTS.md
