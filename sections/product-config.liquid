@@ -570,18 +570,18 @@
     color2: "#101826"
   };
 
-  const visual-contents = document.getElementById('visual-contents');
+  const visualContents = document.getElementById('visual-contents');
 
   function updateVisual() {
-    visual-contents.style.opacity = '0';
-    visual-contents.style.transform = 'translateY(8px)';
+    visualContents.style.opacity = '0';
+    visualContents.style.transform = 'translateY(8px)';
 
     setTimeout(() => {
       const gradient = `linear-gradient(160deg, ${state.color1}, ${state.color2} 72%)`;
-      visual-contents.style.background = gradient;
+      visualContents.style.background = gradient;
 
-      visual-contents.style.opacity = '1';
-      visual-contents.style.transform = 'translateY(0)';
+      visualContents.style.opacity = '1';
+      visualContents.style.transform = 'translateY(0)';
     }, 160);
   }
 
