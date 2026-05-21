@@ -558,44 +558,69 @@
       grid-template-columns: 1fr;
     }
   }
+
+  .test {
+    border: 1px solid red;
+  }
 {% endstylesheet %}
 
 {% javascript %}
-
-  let state = {
-    flower: ['rose'],
+  const initialState = {
+    flower: ['rose', 'red'],
     arrangement: 'bouquet',
     color: 'rose',
-    color1: "#2a3850", // TODO: Move this away from the state.
-    color2: "#101826"
   };
 
-  const visualContents = document.getElementById('visual-contents');
+  const proxy = (initialData) => {
+    // The target object is private to this function's scope
+    const target = { ...initialData };
 
-  function updateVisual() {
-    visualContents.style.opacity = '0';
-    visualContents.style.transform = 'translateY(8px)';
+    const proxy = new Proxy(target, {
+      set(obj, prop, value) {
+        console.log(`Updating ${prop} to ${value}`);
+        obj[prop] = value;
+        render(target);
+        return true;
+      },
+      get(obj, prop) {
+        return obj[prop];
+      },
+    });
 
-    setTimeout(() => {
-      const gradient = `linear-gradient(160deg, ${state.color1}, ${state.color2} 72%)`;
-      visualContents.style.background = gradient;
+    proxy.color = initialData.color;
 
-      visualContents.style.opacity = '1';
-      visualContents.style.transform = 'translateY(0)';
-    }, 160);
-  }
+    // Return only the proxy
+    return proxy;
+  };
+
+  const stateProxy = proxy(initialState);
 
   document.querySelectorAll("[data-type='color']").forEach((button) => {
     button.addEventListener('click', () => {
       document.querySelectorAll("[data-type='color']").forEach((btn) => btn.classList.remove('active'));
       button.classList.add('active');
-      state.color = button.dataset.value;
-      updateVisual();
+      stateProxy.color = button.dataset.value;
     });
   });
 
+  function render(state) {
+    const visualContents = document.getElementById('visual-contents');
 
-  updateVisual();
+    if (visualContents) {
+      visualContents.innerHTML = `
+        <div class="swatch ${state.color}"></div>
+        <div> Hello</div>
+      `;
+    }
+
+    visualContents.style.opacity = '0';
+    visualContents.style.transform = 'translateY(8px)';
+
+    setTimeout(() => {
+      visualContents.style.opacity = '1';
+      visualContents.style.transform = 'translateY(0)';
+    }, 160);
+  }
 {% endjavascript %}
 
 {% schema %}
