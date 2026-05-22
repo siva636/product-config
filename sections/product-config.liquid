@@ -49,7 +49,7 @@
 
         <div class="help">
           Help:<br>
-          Choose between 1 to 3 flowers. If you try to choose more, excess ones will be automatically removed.
+          Choose between 1 to 3 flowers. Multiple selections allowed. Select a flower by clicking inside the surrounding box and unselect it click once again.
         </div>
       </div>
 
@@ -674,7 +674,7 @@
   function render(state) {
     const visualContents = document.getElementById('visual-contents');
 
-    const flowers = state.flower.length < 1 || state.flower.length > 3 ? '<div class=render-flower-error>Error: <br> Select 1 - 3 flowers</div>' : state.flower.map((x) => `<div class=render-flower>${x}</div>`).join(' ');
+    const flowers = state.flower.length < 1 || state.flower.length > 3 ? '<div class=render-flower-error>Error <br>  Choose between 1 to 3 flowers</div>' : state.flower.map((x) => `<div class=render-flower>${x}</div>`).join(' ');
 
     if (visualContents) {
       visualContents.innerHTML = `
