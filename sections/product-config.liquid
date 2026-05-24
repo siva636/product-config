@@ -49,7 +49,8 @@
 
         <div class="help">
           Help:<br>
-          Choose between 1 to 3 flowers. Multiple selections allowed. Select a flower by clicking inside the surrounding box and unselect it click once again.
+          Choose between 1 to 3 flowers. Multiple selections allowed. Select a flower by clicking inside the surrounding
+          box and unselect it click once again.
         </div>
       </div>
 
@@ -146,13 +147,19 @@
       </div>
 
       <div class="summary">
-        <h3>$99.00</h3>
-        <div class="summary-line" id="summaryLine">Rose, Tulip | Bouquet | Red</div>
+        <h3 id="price"></h3>
+        <div class="summary-line" id="title"></div>
 
-        <button class="cart">Add to Cart</button>
-        <br>
-        <br>
-        <button class="cart">Checkout</button>
+          <div class="product-form">
+          {% form 'product', product %}
+            {% assign current_variant = product.selected_or_first_available_variant %}
+            <input hidden type="text" name="id" value="{{ current_variant.id }}">
+            <input hidden id="config" type="text" name="properties[config]">
+            <input hidden type="text" name="quantity" min="1" value="1">
+            {% comment %} <button class="cart" type="submit">Add to cart</button> {% endcomment %}
+            {{ form | payment_button }}
+          {% endform %}
+        </div>
 
         <div class="proof">
           <div>
@@ -164,7 +171,8 @@
             <span>Fresh flowers from our own garden</span>
           </div>
         </div>
-      </div>
+
+          </div>
     </div>
   </section>
 </main>
@@ -452,7 +460,7 @@
 
   .summary-line {
     color: #d6d6d8;
-    font-size: 15px;
+    font-size: 24px;
     line-height: 1.6;
     margin-bottom: 20px;
   }
@@ -672,9 +680,23 @@
   });
 
   function render(state) {
+    const lineItemProperties = document.getElementById('config');
     const visualContents = document.getElementById('visual-contents');
+    const price = document.getElementById('price');
+    const title = document.getElementById('title');
 
-    const flowers = state.flower.length < 1 || state.flower.length > 3 ? '<div class=render-flower-error>Error <br>  Choose between 1 to 3 flowers</div>' : state.flower.map((x) => `<div class=render-flower>${x}</div>`).join(' ');
+    const flowers =
+      state.flower.length < 1 || state.flower.length > 3
+        ? '<div class=render-flower-error>Error <br>  Choose between 1 to 3 flowers</div>'
+        : state.flower.map((x) => `<div class=render-flower>${x}</div>`).join(' ');
+
+    if (lineItemProperties) {
+      lineItemProperties.value = JSON.stringify({
+        flower: state.flower,
+        arrangement: state.arrangement,
+        color: state.color,
+      });
+    }
 
     if (visualContents) {
       visualContents.innerHTML = `
@@ -684,6 +706,35 @@
         <div class="swatch ${state.color}">
         </div>
       `;
+    }
+
+    if (price) {
+      let totalPrice = 0;
+
+      state.flower.forEach((flower) => {
+        totalPrice += 20;
+      });
+
+      switch (state.arrangement) {
+        case 'bouquet':
+          totalPrice += 30;
+          break;
+        case 'basket':
+          totalPrice += 25;
+          break;
+        case 'vase':
+          totalPrice += 20;
+          break;
+        case 'box':
+          totalPrice += 10;
+          break;
+      }
+
+      price.textContent = `$${totalPrice}.00`;
+    }
+
+    if (title) {
+      title.textContent = `${state.flower.join(', ')} | ${state.arrangement} | ${state.color}`;
     }
 
     visualContents.style.opacity = '0';
