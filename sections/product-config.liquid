@@ -154,7 +154,7 @@
           {% form 'product', product %}
             {% assign current_variant = product.selected_or_first_available_variant %}
             <input hidden type="text" name="id" value="{{ current_variant.id }}">
-            <input hidden id="config" type="text" name="properties[config]">
+            <input hidden id="config" type="text" name="properties[_config]">
             <input hidden type="text" name="quantity" min="1" value="1">
             {% comment %} <button class="cart" type="submit">Add to cart</button> {% endcomment %}
             {{ form | payment_button }}
